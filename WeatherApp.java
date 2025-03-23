@@ -4,12 +4,12 @@ import java.net.URL;
 
 public class WeatherApp {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String apikey = "37de911389e24decb42165002252203";
+        Scanner scanner = new Scanner(System.in); // Scanner is used to read the user's input
+        String apikey = "37de911389e24decb42165002252203"; // Key to use weather API
         System.out.println("Weather Forecast App");
 
         while (true) {
-            // Displays a main menu
+            // Displays main menu
             System.out.println("\nSelect and option: ");
             System.out.println("1. Get Current Weather");
             System.out.println("2. Get 3-Day Forecast");
@@ -39,17 +39,19 @@ public class WeatherApp {
         System.out.println("\nCurrent Weather\n");
         System.out.println("Enter a city: ");
         String city = scanner.nextLine().replace(" ", "%20");
-        String urlString = "http://api.weatherapi.com/v1/current.json?key=" + apikey + "&q=" + city;
+        String urlString = "http://api.weatherapi.com/v1/current.json?key=" + apikey + "&q=" + city; // Adds the api key
+                                                                                                     // and the city to
+                                                                                                     // the url
         try {
             URL url = new URL(urlString);
             StringBuilder response = new StringBuilder();
-            try (Scanner scanner2 = new Scanner(url.openStream())) {
+            try (Scanner scanner2 = new Scanner(url.openStream())) { // Verifies the url is working
                 while (scanner2.hasNext()) {
                     response.append(scanner2.nextLine());
                 }
             }
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            if (jsonResponse.has("error")) {
+            JSONObject jsonResponse = new JSONObject(response.toString()); // Stores the data in JSON format
+            if (jsonResponse.has("error")) { // If data for the entered city is not found, and error will be displayed
                 System.out.println("The city you entered does not exist");
                 return;
             }
@@ -82,6 +84,7 @@ public class WeatherApp {
         }
     }
 
+    // Function to get 3-day weather forecast
     private static void getForecast(Scanner scanner, String apikey) {
         System.out.println("\n3-day forecast\n");
         System.out.println("Enter a city: ");
@@ -106,6 +109,7 @@ public class WeatherApp {
                 return;
             }
 
+            // Extract Data from JSON
             JSONObject location = jsonResponse.getJSONObject("location");
             String cityName = location.getString("name");
             String region = location.getString("region");
@@ -115,7 +119,7 @@ public class WeatherApp {
             JSONObject forecastDay2 = forecast.getJSONArray("forecastday").getJSONObject(1);
             JSONObject forecastDay3 = forecast.getJSONArray("forecastday").getJSONObject(2);
 
-            // Extract data for 3 days
+            // Get weather information for 3 days
             System.out.println("\n3-Day Weather Forecast for " + cityName + ", " + region + ", " + country);
             displayForecast(forecastDay1);
             displayForecast(forecastDay2);
@@ -136,6 +140,7 @@ public class WeatherApp {
         double avgWindSpeed = day.getDouble("maxwind_kph");
         double avgHumidity = day.getDouble("avghumidity");
 
+        // Displays data
         System.out.println("Date: " + date);
         System.out.println("Max Temp: " + maxTempC + "°C");
         System.out.println("Min Temp: " + minTempC + "°C");
